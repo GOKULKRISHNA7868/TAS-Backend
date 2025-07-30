@@ -1,26 +1,30 @@
-import nodemailer from "nodemailer";
+// backend/api/send-email.js
+const nodemailer = require("nodemailer");
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST requests are allowed" });
+    return res.status(405).send("Method Not Allowed");
   }
 
   const { toEmail, taskTitle, dueDate } = req.body;
 
+  if (!toEmail || !taskTitle || !dueDate) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
   try {
     const transporter = nodemailer.createTransport({
-      service: "Outlook", // or use smtp.office365.com
       host: "smtp.office365.com",
       port: 587,
       secure: false,
       auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USERNAME,
+    const info = await transporter.sendMail({
+      from: process.env.SMTP_USER,
       to: toEmail,
       subject: "📝 New Task Assigned",
       html: `
@@ -30,9 +34,10 @@ export default async function handler(req, res) {
       `,
     });
 
-    res.status(200).json({ success: true, message: "Email sent successfully" });
+    console.log("✅ Email sent:", info.messageId);
+    res.status(200).json({ message: "Email sent" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: "Failed to send email" });
+    console.error("❌ Error sending email:", err);
+    res.status(500).json({ error: "Failed to send email" });
   }
-}
+};
