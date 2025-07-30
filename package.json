@@ -1,19 +1,12 @@
 {
-  "name": "my-email-backend",
+  "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
-  "type": "commonjs",
+  "main": "api/sendEmail.js",
+  "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "dev": "vercel dev"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "Nodemailer backend for sending task emails",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
-    "express": "^4.18.2",
-    "nodemailer": "^6.9.8"
+    "nodemailer": "^6.9.1"
   }
 }
