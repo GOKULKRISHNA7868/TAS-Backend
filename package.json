@@ -1,35 +1,8 @@
 {
-  "name": "email-sender-local",
+  "name": "email-sender",
   "version": "1.0.0",
-  "type": "commonjs",
-  "main": "api/send-task-email.ts",
-  "scripts": {
-    "start": "ts-node api/send-task-email.ts"
-  },
+  "type": "module",
   "dependencies": {
-    "body-parser": "^2.2.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.21.2",
-    "nodemailer": "^6.10.1"
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/nodemailer": "^6.4.17",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GOKULKRISHNA7868/TAS-Backend.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/GOKULKRISHNA7868/TAS-Backend/issues"
-  },
-  "homepage": "https://github.com/GOKULKRISHNA7868/TAS-Backend#readme",
-  "description": ""
+    "nodemailer": "^6.9.0"
+  }
 }

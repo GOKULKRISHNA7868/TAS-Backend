@@ -1,17 +1,8 @@
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") {
-    return res.status(200).end(); // Preflight request
-  }
-
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Only POST allowed" });
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   const { to, subject, text } = req.body;
@@ -19,23 +10,21 @@ export default async function handler(req, res) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: "gokultupakula9494@gmail.com", // replace
+      pass: "vjvw dept gzig daeu", // replace
     },
   });
 
   try {
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: "your_gmail@gmail.com",
       to,
       subject,
       text,
     });
 
     res.status(200).json({ message: "Email sent successfully!" });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to send email", error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 }
