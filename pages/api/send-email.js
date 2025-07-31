@@ -1,44 +1,40 @@
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
-  console.log("🔔 Email API called");
+  console.log("🔔 Request method:", req.method);
 
-  // ✅ Allow CORS
-  res.setHeader("Access-Control-Allow-Origin", "*"); // Use specific domain in production
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  // Allow all origins (CORS)
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // ✅ Handle preflight request
+  // Handle CORS preflight
   if (req.method === "OPTIONS") {
-    console.log("⚙️ Handling CORS preflight");
+    console.log("🛑 Preflight request received");
     return res.status(200).end();
   }
 
-  // ✅ Only allow GET for now
   if (req.method !== "GET") {
-    console.log("❌ Method not allowed:", req.method);
-    return res
-      .status(405)
-      .json({ error: "Only GET method is allowed for now" });
+    console.log("❌ Method not allowed");
+    return res.status(405).json({ error: "Only GET method is allowed" });
   }
 
   const { to, subject, text } = req.query;
 
-  console.log("📥 Query received:", { to, subject, text });
+  console.log("📨 Query Params:", { to, subject, text });
 
   if (!to || !subject || !text) {
-    console.log("❌ Missing required fields");
+    console.log("❌ Missing fields");
     return res
       .status(400)
       .json({ error: "Missing required fields: to, subject, text" });
   }
 
-  // ✅ Configure mail transporter
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: "gokultupakula9494@gmail.com",
-      pass: "vjvw dept gzig daeu", // App-specific password
+      pass: "vjvw dept gzig daeu", // Google App password
     },
   });
 
@@ -50,15 +46,10 @@ export default async function handler(req, res) {
       text,
     });
 
-    console.log("✅ Email sent:", info.response);
-
-    return res
-      .status(200)
-      .json({ message: "✅ Email sent successfully", info: info.response });
+    console.log("✅ Email sent:", info.messageId);
+    return res.status(200).json({ message: "Email sent successfully ✅" });
   } catch (error) {
     console.error("❌ Email send error:", error);
-    return res
-      .status(500)
-      .json({ error: error.message || "Failed to send email" });
+    return res.status(500).json({ error: error.message });
   }
 }
