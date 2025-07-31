@@ -1,30 +1,34 @@
-// pages/api/send-email.js
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
-  // Handle CORS
+  // Enable CORS
+  res.setHeader("Access-Control-Allow-Credentials", true);
   res.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Handle preflight request
+  // Handle OPTIONS method
   if (req.method === "OPTIONS") {
-    return res.status(200).end(); // Quick response for preflight
+    return res.status(200).end();
   }
 
-  // Support both GET and POST
-  const data = req.method === "GET" ? req.query : req.body;
-  const { to, subject, text } = data;
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Only GET method is allowed" });
+  }
+
+  const { to, subject, text } = req.query;
 
   if (!to || !subject || !text) {
-    return res.status(400).json({ error: "Missing required fields" });
+    return res.status(400).json({
+      error: "Missing required fields: to, subject, text",
+    });
   }
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: "gokultupakula9494@gmail.com",
-      pass: "vjvw dept gzig daeu", // Use Gmail App Password
+      pass: "vjvw dept gzig daeu", // App password
     },
   });
 
@@ -36,10 +40,14 @@ export default async function handler(req, res) {
       text,
     });
 
-    console.log("✅ Email sent:", info.messageId);
-    return res.status(200).json({ message: "Email sent successfully ✅" });
+    return res.status(200).json({
+      message: "Email sent successfully ✅",
+      messageId: info.messageId,
+    });
   } catch (error) {
-    console.error("❌ Email error:", error);
-    return res.status(500).json({ error: "Email failed: " + error.message });
+    return res.status(500).json({
+      error: "Failed to send email ❌",
+      details: error.message,
+    });
   }
 }
