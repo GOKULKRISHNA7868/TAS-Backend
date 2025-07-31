@@ -1,15 +1,20 @@
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
-  // ✅ Allow all origins (wildcard CORS)
+  // ✅ Set CORS headers manually before anything else
+  if (req.method === "OPTIONS") {
+    res
+      .status(200)
+      .setHeader("Access-Control-Allow-Origin", "*")
+      .setHeader("Access-Control-Allow-Methods", "POST, OPTIONS")
+      .setHeader("Access-Control-Allow-Headers", "Content-Type")
+      .end();
+    return;
+  }
+
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  // ✅ Respond to CORS preflight request
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -21,8 +26,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  const EMAIL_USER = "gokultupakula9494@gmail.com"; // Replace with your Gmail
-  const EMAIL_PASS = "vjvw dept gzig daeu"; // Replace with your App Password
+  const EMAIL_USER = "gokultupakula9494@gmail.com"; // Replace
+  const EMAIL_PASS = "vjvw dept gzig daeu"; // Replace
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -41,10 +46,10 @@ export default async function handler(req, res) {
       html,
     });
 
-    res.status(200).json({ message: "Email sent successfully" });
+    return res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
-    console.error("Error sending email:", error);
-    res
+    console.error("Send error:", error);
+    return res
       .status(500)
       .json({ error: "Failed to send email", detail: error.message });
   }
