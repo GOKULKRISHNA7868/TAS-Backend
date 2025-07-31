@@ -1,15 +1,15 @@
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
-  // Allow preflight requests
+  // CORS Headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Handle preflight
   if (req.method === "OPTIONS") {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     return res.status(200).end();
   }
-
-  res.setHeader("Access-Control-Allow-Origin", "*");
 
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   const { to, subject, text } = req.body;
 
   if (!to || !subject || !text) {
-    return res.status(400).json({ message: "Missing fields" });
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
@@ -39,9 +39,9 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ message: "Email sent", info });
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error:", error);
     return res
       .status(500)
-      .json({ message: "Internal Server Error", error: error.message });
+      .json({ message: "Failed to send email", error: error.message });
   }
 }
