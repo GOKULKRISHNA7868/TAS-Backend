@@ -1,15 +1,8 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "pages/api/send-email.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/send-email",
-      "dest": "pages/api/send-email.js"
+      "source": "/send-email",
+      "destination": "/api/send-email.js"
     }
   ]
 }

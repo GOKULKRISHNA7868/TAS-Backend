@@ -1,16 +1,8 @@
 {
-  "name": "email-sender",
+  "name": "email-api",
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "next": "^15.4.5",
-    "nodemailer": "^6.9.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
-  },
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "nodemailer": "^6.9.0"
   }
 }
