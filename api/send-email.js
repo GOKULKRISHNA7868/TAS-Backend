@@ -1,24 +1,23 @@
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
-  // ✅ CORS headers for all requests
+  // ✅ Set CORS headers for ALL requests
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // ✅ Respond to preflight OPTIONS request
+  // ✅ Respond to preflight (OPTIONS) request
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
-  // ✅ Block all methods except POST
+  // ✅ Only allow POST requests
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   const { to, subject, text, html } = req.body;
 
-  // Basic validation
   if (!to || !subject || (!text && !html)) {
     return res.status(400).json({
       error: "Missing required fields: to, subject, and either text or html",
@@ -29,7 +28,7 @@ export default async function handler(req, res) {
     service: "gmail",
     auth: {
       user: "gokultupakula9494@gmail.com",
-      pass: "vjvw dept gzig daeu", // App password
+      pass: "vjvw dept gzig daeu", // App password from Google
     },
   });
 
@@ -46,6 +45,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ message: "✅ Email sent successfully" });
   } catch (error) {
+    console.error("Email send error:", error);
     return res
       .status(500)
       .json({ error: `❌ Failed to send: ${error.message}` });
