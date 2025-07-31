@@ -1,17 +1,17 @@
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
-  // ✅ Set CORS headers for ALL requests
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  // ✅ Respond to preflight (OPTIONS) request
+  // ✅ Handle CORS for both OPTIONS and actual requests
   if (req.method === "OPTIONS") {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     return res.status(200).end();
   }
 
-  // ✅ Only allow POST requests
+  // ✅ Set CORS for all other methods
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
