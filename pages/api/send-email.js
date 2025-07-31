@@ -1,20 +1,20 @@
+// pages/api/send-email.js
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  // Handle CORS
+  res.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+  // Handle preflight request
   if (req.method === "OPTIONS") {
-    return res.status(200).end(); // Preflight success
+    return res.status(200).end(); // Quick response for preflight
   }
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST requests allowed" });
-  }
-
-  const { to, subject, text } = req.body;
+  // Support both GET and POST
+  const data = req.method === "GET" ? req.query : req.body;
+  const { to, subject, text } = data;
 
   if (!to || !subject || !text) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     service: "gmail",
     auth: {
       user: "gokultupakula9494@gmail.com",
-      pass: "vjvw dept gzig daeu", // Use your Gmail App Password
+      pass: "vjvw dept gzig daeu", // Use Gmail App Password
     },
   });
 
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     console.log("✅ Email sent:", info.messageId);
     return res.status(200).json({ message: "Email sent successfully ✅" });
   } catch (error) {
-    console.error("❌ Email send error:", error);
-    return res.status(500).json({ error: error.message });
+    console.error("❌ Email error:", error);
+    return res.status(500).json({ error: "Email failed: " + error.message });
   }
 }
