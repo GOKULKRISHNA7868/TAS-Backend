@@ -1,4 +1,7 @@
+import nodemailer from "nodemailer";
+
 export default async function handler(req, res) {
+  // Allow preflight requests
   if (req.method === "OPTIONS") {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
@@ -23,7 +26,7 @@ export default async function handler(req, res) {
       service: "gmail",
       auth: {
         user: "gokultupakula9494@gmail.com",
-        pass: "vjvw dept gzig daeu", // Not Gmail password
+        pass: "vjvw dept gzig daeu",
       },
     });
 
@@ -36,9 +39,9 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ message: "Email sent", info });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error sending email:", error);
     return res
       .status(500)
-      .json({ message: "Server Error", error: error.message });
+      .json({ message: "Internal Server Error", error: error.message });
   }
 }
