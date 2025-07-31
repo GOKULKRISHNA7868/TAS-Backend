@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/send-email.js": {
-      "runtime": "vercel-node@1.14.0"
-    }
-  },
   "routes": [
     {
       "src": "/api/send-email",
